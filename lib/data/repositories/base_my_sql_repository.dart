@@ -10,7 +10,6 @@ abstract class BaseMySQLRepository<E, ID> implements BaseRepository<E, ID> {
   MySQLConnection get db => _mySQLManager.connection;
 
   String get tableName;
-  String get primaryKeyField;
 
   E map2Entity(Map<String, dynamic> value);
   Map<String, dynamic> entity2Map(E entity);
@@ -67,15 +66,16 @@ abstract class BaseMySQLRepository<E, ID> implements BaseRepository<E, ID> {
   @override
   Future<void> update(E entity) async {
     final data = entity2Map(entity);
+    final idParams = id2Map(entity2Id(entity));
+
+    final primaryKeyFields = idParams.keys.toSet();
 
     final setClause = data.keys
-        .where((k) => !primaryKeyField.contains(k))
+        .where((k) => !primaryKeyFields.contains(k))
         .map((k) => "$k = :$k")
         .join(', ');
 
-    final idParams = id2Map(entity2Id(entity));
     final where = _buildWhereClause(idParams);
-
     final queryParams = {...data, ...idParams};
 
     await db.execute(
