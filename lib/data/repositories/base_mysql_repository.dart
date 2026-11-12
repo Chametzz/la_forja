@@ -1,5 +1,5 @@
 import 'package:la_forja/domain/repositories/base_repository.dart';
-import 'package:la_forja/pkg/my_sql_manager.dart';
+import 'package:la_forja/pkg/mysql_manager.dart';
 import 'package:mysql_client/mysql_client.dart';
 
 abstract class BaseMySQLRepository<E, ID> implements BaseRepository<E, ID> {
@@ -7,14 +7,14 @@ abstract class BaseMySQLRepository<E, ID> implements BaseRepository<E, ID> {
 
   BaseMySQLRepository(this._mySQLManager);
 
-  MySQLConnection get db => _mySQLManager.connection;
+  MySQLConnection get connection => _mySQLManager.connection;
 
   String get tableName;
 
   E map2Entity(Map<String, dynamic> value);
   Map<String, dynamic> entity2Map(E entity);
 
-  ID entity2Id(E entity);
+  ID getIdFromEntity(E entity);
   Map<String, dynamic> id2Map(ID id);
 
   // Helpers
@@ -24,7 +24,7 @@ abstract class BaseMySQLRepository<E, ID> implements BaseRepository<E, ID> {
 
   @override
   Future<List<E>> getAll() async {
-    final result = await db.execute("SELECT * FROM $tableName;");
+    final result = await connection.execute("SELECT * FROM $tableName;");
     return result.rows.map((row) => map2Entity(row.assoc())).toList();
   }
 
@@ -33,7 +33,7 @@ abstract class BaseMySQLRepository<E, ID> implements BaseRepository<E, ID> {
     final params = id2Map(id);
     final where = _buildWhereClause(params);
 
-    final result = await db.execute(
+    final result = await connection.execute(
       "SELECT * FROM $tableName WHERE $where;",
       params,
     );
@@ -47,7 +47,7 @@ abstract class BaseMySQLRepository<E, ID> implements BaseRepository<E, ID> {
     final params = id2Map(id);
     final where = _buildWhereClause(params);
 
-    await db.execute("DELETE FROM $tableName WHERE $where;", params);
+    await connection.execute("DELETE FROM $tableName WHERE $where;", params);
   }
 
   @override
@@ -57,7 +57,7 @@ abstract class BaseMySQLRepository<E, ID> implements BaseRepository<E, ID> {
     final columns = data.keys.join(', ');
     final placeholders = data.keys.map((k) => ':$k').join(', ');
 
-    await db.execute(
+    await connection.execute(
       "INSERT INTO $tableName ($columns) VALUES ($placeholders);",
       data,
     );
@@ -66,7 +66,7 @@ abstract class BaseMySQLRepository<E, ID> implements BaseRepository<E, ID> {
   @override
   Future<void> update(E entity) async {
     final data = entity2Map(entity);
-    final idParams = id2Map(entity2Id(entity));
+    final idParams = id2Map(getIdFromEntity(entity));
 
     final primaryKeyFields = idParams.keys.toSet();
 
@@ -78,7 +78,7 @@ abstract class BaseMySQLRepository<E, ID> implements BaseRepository<E, ID> {
     final where = _buildWhereClause(idParams);
     final queryParams = {...data, ...idParams};
 
-    await db.execute(
+    await connection.execute(
       "UPDATE $tableName SET $setClause WHERE $where;",
       queryParams,
     );
