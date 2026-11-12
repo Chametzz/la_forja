@@ -1,4 +1,4 @@
 import 'package:la_forja/domain/entities/empleado.dart';
-import 'package:la_forja/domain/repositories/repositorio_base.dart';
+import 'package:la_forja/domain/repositories/base_repository.dart';
 
-abstract class RepositorioEmpleado implements RepositorioBase<Empleado, int> {}
+abstract class EmpleadoRepository implements BaseRepository<Empleado, int> {}
