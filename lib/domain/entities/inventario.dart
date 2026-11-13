@@ -1,7 +1,9 @@
+import 'package:decimal/decimal.dart';
+
 class Inventario {
   final int productoId;
   final int almacenId;
-  final int cantidad;
+  final Decimal cantidad;
 
   Inventario({
     required this.productoId,
@@ -9,7 +11,7 @@ class Inventario {
     required this.cantidad,
   });
 
-  Inventario copyWith({int? productoId, int? almacenId, int? cantidad}) {
+  Inventario copyWith({int? productoId, int? almacenId, Decimal? cantidad}) {
     return Inventario(
       productoId: productoId ?? this.productoId,
       almacenId: almacenId ?? this.almacenId,

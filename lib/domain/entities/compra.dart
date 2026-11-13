@@ -1,8 +1,10 @@
+import 'package:decimal/decimal.dart';
+
 class Compra {
   final String proveedorRfc;
   final int productoId;
   final DateTime fechaOrden;
-  final int cantidad;
+  final Decimal cantidad;
   final DateTime fechaRecepcion;
   final int precioCompra;
 
@@ -19,7 +21,7 @@ class Compra {
     String? proveedorRfc,
     int? productoId,
     DateTime? fechaOrden,
-    int? cantidad,
+    Decimal? cantidad,
     DateTime? fechaRecepcion,
     int? precioCompra,
   }) {

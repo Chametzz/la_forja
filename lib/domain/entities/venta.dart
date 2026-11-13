@@ -1,11 +1,13 @@
+import 'package:decimal/decimal.dart';
+
 class Venta {
   final String folioVenta;
   final int productoId;
   final int empleadoId;
   final int clienteId;
   final DateTime fechaVenta;
-  final int cantidad;
-  final int precioVenta;
+  final Decimal cantidad;
+  final Decimal precioVenta;
 
   Venta({
     required this.folioVenta,
@@ -23,8 +25,8 @@ class Venta {
     int? empleadoId,
     int? clienteId,
     DateTime? fechaVenta,
-    int? cantidad,
-    int? precioVenta,
+    Decimal? cantidad,
+    Decimal? precioVenta,
   }) {
     return Venta(
       folioVenta: folioVenta ?? this.folioVenta,
