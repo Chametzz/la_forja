@@ -3,6 +3,12 @@ import 'package:mysql_client/mysql_client.dart';
 class MySQLManager {
   MySQLConnection? _connection;
 
+  String host = "localhost";
+  int port = 3306;
+  String userName = "root";
+  String password = "";
+  String databaseName = "";
+
   MySQLConnection get connection {
     if (_connection == null || !_connection!.connected) {
       throw Exception(
@@ -13,13 +19,7 @@ class MySQLManager {
     return _connection!;
   }
 
-  Future<void> connect({
-    required String host,
-    required int port,
-    required String userName,
-    required String password,
-    required String databaseName,
-  }) async {
+  Future<void> connect() async {
     if (_connection != null && _connection!.connected) {
       await _connection!.close();
     }

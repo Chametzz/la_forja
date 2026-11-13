@@ -11,75 +11,91 @@ abstract class BaseMySQLRepository<E, ID> implements BaseRepository<E, ID> {
 
   String get tableName;
 
-  E map2Entity(Map<String, dynamic> value);
+  List<String> get autoIncrementFields;
+
+  E map2Entity(Map<String, dynamic> map);
   Map<String, dynamic> entity2Map(E entity);
 
   ID getIdFromEntity(E entity);
   Map<String, dynamic> id2Map(ID id);
 
-  // Helpers
-  String _buildWhereClause(Map<String, dynamic> params) {
-    return params.keys.map((key) => "$key = :$key").join(" AND ");
-  }
+  String _where(Map<String, dynamic> params) =>
+      params.keys.map((key) => "$key = :$key").join(" AND ");
 
   @override
-  Future<List<E>> getAll() async {
-    final result = await connection.execute("SELECT * FROM $tableName;");
+  Future<List<E>> getAll({int? limit, int? offset, String? orderBy}) async {
+    final query = StringBuffer("SELECT * FROM $tableName");
+
+    if (orderBy != null && orderBy.isNotEmpty) {
+      query.write(" ORDER BY $orderBy");
+    }
+    if (limit != null) query.write(" LIMIT $limit");
+    if (offset != null) query.write(" OFFSET $offset");
+    query.write(";");
+
+    final result = await connection.execute(query.toString());
     return result.rows.map((row) => map2Entity(row.assoc())).toList();
   }
 
   @override
   Future<E?> getById(ID id) async {
     final params = id2Map(id);
-    final where = _buildWhereClause(params);
-
     final result = await connection.execute(
-      "SELECT * FROM $tableName WHERE $where;",
+      "SELECT * FROM $tableName WHERE ${_where(params)};",
       params,
     );
 
-    if (result.rows.isEmpty) return null;
-    return map2Entity(result.rows.first.assoc());
+    return result.rows.isEmpty ? null : map2Entity(result.rows.first.assoc());
   }
 
   @override
   Future<void> delete(ID id) async {
     final params = id2Map(id);
-    final where = _buildWhereClause(params);
-
-    await connection.execute("DELETE FROM $tableName WHERE $where;", params);
+    await connection.execute(
+      "DELETE FROM $tableName WHERE ${_where(params)};",
+      params,
+    );
   }
 
   @override
-  Future<void> create(E entity) async {
+  Future<E> create(E entity) async {
     final data = entity2Map(entity);
+
+    for (var field in autoIncrementFields) {
+      data.remove(field);
+    }
 
     final columns = data.keys.join(', ');
     final placeholders = data.keys.map((k) => ':$k').join(', ');
 
-    await connection.execute(
+    final result = await connection.execute(
       "INSERT INTO $tableName ($columns) VALUES ($placeholders);",
       data,
     );
+
+    if (autoIncrementFields.isNotEmpty) {
+      final generatedId = int.parse(result.lastInsertID.toString()) as ID;
+      return await getById(generatedId) ?? entity;
+    }
+
+    return entity;
   }
 
   @override
   Future<void> update(E entity) async {
     final data = entity2Map(entity);
     final idParams = id2Map(getIdFromEntity(entity));
-
-    final primaryKeyFields = idParams.keys.toSet();
+    final pkFields = idParams.keys.toSet();
 
     final setClause = data.keys
-        .where((k) => !primaryKeyFields.contains(k))
+        .where((k) => !pkFields.contains(k))
         .map((k) => "$k = :$k")
         .join(', ');
 
-    final where = _buildWhereClause(idParams);
     final queryParams = {...data, ...idParams};
 
     await connection.execute(
-      "UPDATE $tableName SET $setClause WHERE $where;",
+      "UPDATE $tableName SET $setClause WHERE ${_where(idParams)};",
       queryParams,
     );
   }
