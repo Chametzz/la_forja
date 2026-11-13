@@ -40,6 +40,8 @@ dependencies:
   mysql_client: ^0.0.27
   flex_color_scheme: ^9.0.0
   decimal: ^3.2.6
+  material_ui: ^1.11.0
+  cupertino_ui: ^1.1.6
 
 dev_dependencies:
   flutter_test:
