@@ -1,6 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:la_forja/domain/entities/user.dart';
-import 'package:la_forja/domain/repositories/user_repository.dart';
+import 'package:la_forja/domain/services/user_service.dart';
 
 abstract class AuthState {}
 
@@ -19,14 +19,14 @@ class AuthError extends AuthState {
 }
 
 class AuthCubit extends Cubit<AuthState> {
-  final UserRepository _userRepository;
+  final UserService _userService;
 
-  AuthCubit({required this._userRepository}) : super(AuthInitial());
+  AuthCubit({required this._userService}) : super(AuthInitial());
 
   Future<void> login(String username, String password) async {
     emit(AuthLoading());
     try {
-      final user = await _userRepository.authenticate(username, password);
+      final user = await _userService.authenticate(username, password);
       if (user != null) {
         emit(AuthAuthenticated(user));
       } else {

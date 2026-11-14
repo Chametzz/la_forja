@@ -1,5 +1,5 @@
 import 'package:la_forja/domain/entities/user.dart';
 
-abstract class UserRepository {
+abstract class UserService {
   Future<User?> authenticate(String username, String password);
 }
