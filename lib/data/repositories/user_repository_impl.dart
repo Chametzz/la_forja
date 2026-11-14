@@ -14,7 +14,12 @@ class UserRepositoryImpl implements UserRepository {
       _mySQLManager.password = password;
       await _mySQLManager.connect();
       return User(username: username, password: password);
-    } catch (e) {
+    } catch (e, stackTrace) {
+      print('================ ERROR MYSQL ================\n');
+      print(e);
+      print('\n---------------- StackTrace ----------------\n');
+      print(stackTrace);
+      print('\n============================================');
       return null;
     }
   }

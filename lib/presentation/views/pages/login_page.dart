@@ -1,4 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:la_forja/container.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:la_forja/presentation/states/auth_cubit.dart';
 
@@ -49,7 +50,12 @@ class _LoginPageState extends State<LoginPage> {
                   behavior: SnackBarBehavior.floating,
                 ),
               );
-            // TODO: Navegar al Dashboard aquí cuando esté listo
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                builder: (context) => buildDashboardPage(user: state.user),
+              ),
+            );
           } else if (state is AuthError) {
             ScaffoldMessenger.of(context)
               ..hideCurrentSnackBar()
