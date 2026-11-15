@@ -11,7 +11,7 @@ class AppSettingsState {
 
   const AppSettingsState({
     required this.settings,
-    this.isLoading = false,
+    this.isLoading = true, // Arranca en true para esperar la carga inicial
     this.isSaving = false,
     this.errorMessage,
     this.isSavedSuccessfully = false,
@@ -40,7 +40,10 @@ class AppSettingsCubit extends Cubit<AppSettingsState> {
   AppSettingsCubit({required this._service})
     : super(
         const AppSettingsState(
-          settings: AppSettings(host: '127.0.0.1', port: 3306),
+          settings: AppSettings(
+            host: '',
+            port: 3306,
+          ), // Placeholder inicial temporal
         ),
       ) {
     load();

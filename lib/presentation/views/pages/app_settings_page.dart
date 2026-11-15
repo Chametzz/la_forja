@@ -60,6 +60,16 @@ class _AppSettingsPageState extends State<AppSettingsPage> {
       ),
       body: BlocConsumer<AppSettingsCubit, AppSettingsState>(
         listener: (context, state) {
+          // Sincroniza los controladores con los datos reales al terminar de cargar o actualizar
+          if (!state.isLoading) {
+            if (_hostController.text != state.settings.host) {
+              _hostController.text = state.settings.host;
+            }
+            if (_portController.text != state.settings.port.toString()) {
+              _portController.text = state.settings.port.toString();
+            }
+          }
+
           if (state.isSavedSuccessfully) {
             ScaffoldMessenger.of(context)
               ..hideCurrentSnackBar()
@@ -102,9 +112,7 @@ class _AppSettingsPageState extends State<AppSettingsPage> {
                 ),
                 child: ConstrainedBox(
                   constraints: BoxConstraints(
-                    minHeight:
-                        constraints.maxHeight -
-                        48, // Resta el padding vertical del scroll
+                    minHeight: constraints.maxHeight - 48,
                   ),
                   child: Center(
                     child: ConstrainedBox(
