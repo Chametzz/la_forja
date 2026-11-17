@@ -42,7 +42,11 @@ class InventarioRepositoryImpl
   // ─── Configuración de búsqueda (obligatoria) ───────────────────────────
 
   @override
-  Set<String> get searchableFields => const {'producto_id', 'almacen_id'};
+  Set<String> get searchableFields => const {
+    'producto_id',
+    'almacen_id',
+    'cantidad',
+  };
 
   @override
   String get defaultOrderBy => 'producto_id ASC, almacen_id ASC';
