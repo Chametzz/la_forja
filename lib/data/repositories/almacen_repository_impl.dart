@@ -4,7 +4,7 @@ import 'package:la_forja/domain/repositories/almacen_repository.dart';
 
 class AlmacenRepositoryImpl extends BaseMySQLRepository<Almacen, int>
     implements AlmacenRepository {
-  new(super.mySQLManager);
+  AlmacenRepositoryImpl(super.mySQLManager);
 
   @override
   Map<String, dynamic> entity2Map(Almacen entity) => {
@@ -21,9 +21,9 @@ class AlmacenRepositoryImpl extends BaseMySQLRepository<Almacen, int>
 
   @override
   Almacen map2Entity(Map<String, dynamic> map) => Almacen(
-    almacenId: map["almacen_id"],
-    almacenNombre: map["almacen_nombre"],
-    tipo: map["tipo"],
+    almacenId: int.parse(map["almacen_id"].toString()),
+    almacenNombre: map["almacen_nombre"].toString(),
+    tipo: map["tipo"].toString(),
   );
 
   @override
@@ -31,4 +31,16 @@ class AlmacenRepositoryImpl extends BaseMySQLRepository<Almacen, int>
 
   @override
   List<String> get autoIncrementFields => ["almacen_id"];
+
+  // ─── Configuración de búsqueda (obligatoria) ───────────────────────────
+
+  @override
+  Set<String> get searchableFields => const {
+    'almacen_id',
+    'almacen_nombre',
+    'tipo',
+  };
+
+  @override
+  String get defaultOrderBy => 'almacen_id ASC';
 }
