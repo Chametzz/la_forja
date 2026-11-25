@@ -69,3 +69,4 @@ Widget buildInventarioIndexPage() => BlocProvider(
 );
 Widget buildProductoIndexPage() => const Placeholder();
 Widget buildProveedorIndexPage() => const Placeholder();
+Widget buildVentaIndexPage() => const Placeholder();

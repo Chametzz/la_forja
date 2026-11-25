@@ -48,41 +48,54 @@ class _DashboardPageState extends State<DashboardPage> {
             viewBuilder: (context) =>
                 Center(child: Text('Bienvenido al inicio, ${user.username}')),
           ),
-          DashboardModule(
-            title: 'Almacenes',
-            icon: Icons.warehouse_outlined,
-            viewBuilder: (context) => buildAlmacenIndexPage(),
-          ),
-          DashboardModule(
-            title: 'Clientes',
-            icon: Icons.people_outline,
-            viewBuilder: (context) => buildClienteIndexPage(),
-          ),
-          DashboardModule(
-            title: 'Compras',
-            icon: Icons.shopping_cart_outlined,
-            viewBuilder: (context) => buildCompraIndexPage(),
-          ),
-          DashboardModule(
-            title: 'Empleados',
-            icon: Icons.badge_outlined,
-            viewBuilder: (context) => buildEmpleadoIndexPage(),
-          ),
-          DashboardModule(
-            title: 'Inventarios',
-            icon: Icons.inventory_2_outlined,
-            viewBuilder: (context) => buildInventarioIndexPage(),
-          ),
-          DashboardModule(
-            title: 'Productos',
-            icon: Icons.inventory_outlined,
-            viewBuilder: (context) => buildProductoIndexPage(),
-          ),
-          DashboardModule(
-            title: 'Proveedores',
-            icon: Icons.local_shipping_outlined,
-            viewBuilder: (context) => buildProveedorIndexPage(),
-          ),
+          if (user.almacenPermissions.read)
+            DashboardModule(
+              title: 'Almacenes',
+              icon: Icons.warehouse_outlined,
+              viewBuilder: (context) => buildAlmacenIndexPage(),
+            ),
+          if (user.clientePermissions.read)
+            DashboardModule(
+              title: 'Clientes',
+              icon: Icons.people_outline,
+              viewBuilder: (context) => buildClienteIndexPage(),
+            ),
+          if (user.compraPermissions.read)
+            DashboardModule(
+              title: 'Compras',
+              icon: Icons.shopping_cart_outlined,
+              viewBuilder: (context) => buildCompraIndexPage(),
+            ),
+          if (user.empleadoPermissions.read)
+            DashboardModule(
+              title: 'Empleados',
+              icon: Icons.badge_outlined,
+              viewBuilder: (context) => buildEmpleadoIndexPage(),
+            ),
+          if (user.inventarioPermissions.read)
+            DashboardModule(
+              title: 'Inventarios',
+              icon: Icons.inventory_2_outlined,
+              viewBuilder: (context) => buildInventarioIndexPage(),
+            ),
+          if (user.productoPermissions.read)
+            DashboardModule(
+              title: 'Productos',
+              icon: Icons.inventory_outlined,
+              viewBuilder: (context) => buildProductoIndexPage(),
+            ),
+          if (user.proveedorPermissions.read)
+            DashboardModule(
+              title: 'Proveedores',
+              icon: Icons.local_shipping_outlined,
+              viewBuilder: (context) => buildProveedorIndexPage(),
+            ),
+          if (user.ventaPermissions.read)
+            DashboardModule(
+              title: 'Ventas',
+              icon: Icons.point_of_sale,
+              viewBuilder: (context) => buildVentaIndexPage(),
+            ),
         ];
 
         final currentModule = modules[_selectedIndex];

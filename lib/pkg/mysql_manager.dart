@@ -30,6 +30,7 @@ class MySQLManager {
       userName: userName,
       password: password,
       databaseName: databaseName,
+      secure: false,
     );
 
     await _connection!.connect();
